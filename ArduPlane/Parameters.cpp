@@ -1,7 +1,7 @@
 #include "Plane.h"
 
 /*
- *  ArduPlane parameter definitions
+ *  ArduPlane parameter definitions WITH ADDITIONAL TEST EDITS IN COMMENTS
  *
  */
 
