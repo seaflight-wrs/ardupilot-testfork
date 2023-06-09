@@ -53,6 +53,8 @@ public:
 #if HAL_QUADPLANE_ENABLED
         LOITER_ALT_QLAND = 25,
 #endif
+	GROUND_EFFECT = 26; //enumerating ground effect mode in modes list
+	// also moved "endif" stringizer after HAL_QUADPLANE_ENABLED so code works without
     };
 
     // Constructor
@@ -784,5 +786,21 @@ protected:
 
     bool _enter() override;
 };
+
+class ModeGroundEffect : public Mode
+{
+public:
+
+	Mode::Number mode_number() const override { return Mode::Number::GROUND_EFFECT; } //mode no. from above
+	const char *name() const override { return "GROUND_EFFECT"; } //mode name as string
+	const char *name4() const override { return "GDEF"; } //mode shorthand
+
+	// methods that affect movement of the vehicle in this mode
+	void update() override;
+
+protected:
+	bool _enter() override;
+};
+
 
 #endif
