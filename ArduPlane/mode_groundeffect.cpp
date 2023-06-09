@@ -28,6 +28,8 @@ static constexpr int32_t GROUND_EFFECT_PITCH_CENTIDEGREES{200}; //2 degrees for 
 */
 static constexpr float GROUND_EFFECT_CONTROLLER_KP{10};
 
+// TODO make these into parameter values instead of hard-coded
+
 bool ModeGroundEffect::_enter()
 {
 	plane.throttle_allows_nudging = false;
@@ -35,32 +37,34 @@ bool ModeGroundEffect::_enter()
 	plane.auto_navigation_mode = false;
 
 	// Verify a downward-facing rangefinder is configured
-	if(!plane.rangefinder.has_orientation(ROTATION_PITCH_270)){
-		return false;
-	}
+	// if(!plane.rangefinder.has_orientation(ROTATION_PITCH_270)){
+	//	return false;
+	// }
 
 	// Verify that the rangefinder is capable of small distance measures. This fails with many.
-	if(plane.rangefinder.min_distance_cm_orient(ROTATION_PITCH_270) >=10){
-		return false;
-	}
+	// if(plane.rangefinder.min_distance_cm_orient(ROTATION_PITCH_270) >=10){
+	// 	return false;
+	// }
 
 	// Verify rangefinder health - fails if low, high, or no sensor data
-	if(plane.rangefinder.status_orient(ROTATION_PITCH_270) == RangeFinder::Status::Good){
-		return false;
-	}
+	// if(plane.rangefinder.status_orient(ROTATION_PITCH_270) == RangeFinder::Status::Good){
+	// 	return false;
+	// }
 
 	// Verify rangefinder health - last reading should not be more than 0.5s old
-	if((plane.rangefinder.last_reading_ms(ROTATION_PITCH_270) - AP_HAL::millis()) > 500){
-		return false;
-	}
+	// if((plane.rangefinder.last_reading_ms(ROTATION_PITCH_270) - AP_HAL::millis()) > 500){
+	//	return false;
+	// }
 
 	// Verify that we are somewhat close to the desired altitude for the flight mode.
-	if(plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270) > 5 * GROUND_EFFECT_TARGET_ALT_CM){
-		return false;
-	}
+	// if(plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270) > 5 * GROUND_EFFECT_TARGET_ALT_CM){
+	//	return false;
+	// }
 
 	// Set P controller gain
 	pAlt2Throttle(GROUND_EFFECT_CONTROLLER_KP);
+
+	// TODO check that human throttle is nonzero (fail-safe/shutdown mode)
 
 	return true;
 }
@@ -84,13 +88,16 @@ void ModeGroundEffect::update() //defining ModeGroundEffect function
 	* TODO 
 	* Consider filtering rangefinder output. See ../libraries/Filter
 	* There may be a problem with rangefinder read freq
+	* This method is a 400Hz method. Rangefinder (tfMini Plus/benewake) updates at 100Hz
 
 	* Personal notes:
 	* These functions (the bool and void) reference specific members of the ModeGroundEffect
 	* class in mode.h, which are set to "override" meanining they override whatever it was based upon
 	*/
 
-	float error - GROUND_EFFECT_TARGET_ALT_CM - plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270);
+	uint16_t altMm = plane.rangefinder.distance_mm_orient(ROTATION_PITCH_270);
+
+	float error = GROUND_EFFECT_TARGET_ALT_CM - ((float) altMm / 10.0);
 
 	int16_t commanded_throttle = GROUND_EFFECT_STEADY_THROTTLE + ((int16_t) pAlt2Throttle.get_p(error));
 
