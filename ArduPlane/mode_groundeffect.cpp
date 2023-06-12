@@ -100,12 +100,12 @@ void ModeGroundEffect::update() //defining ModeGroundEffect function
 	float x = altMm - plane.g.gndEffect_alt_min;
 
 	// Intercept: how many % should the throttle shift up
-	int16_t b = plane.g.gndEffect_thr_min;
+	int16_t b = plane.g.gndEffect_thr_max;
 
 	int16_t y = m*x_b;
 
 	int16_t commanded_throttle = constrain_int16(y, plane.g.gndEffect_thr_min, plane.g.gndEffect_thr_max);
-	commanded_throttle = constrain_int16(y, 0, 100);
+	commanded_throttle = constrain_int16(commanded_throttle, 0, 100);
 
 	SRV_Channels::set_output_scaled(SRV_Channel::k_throttle,commanded_throttle);
 }
