@@ -42,6 +42,10 @@ public:
     // update state
     void update(void) override;
 
+	// update() will populate state.distance_mm
+	bool supports_mm_precision() const ovveride {return true;}
+
+
 protected:
 
     virtual MAV_DISTANCE_SENSOR _get_mav_distance_sensor_type() const override {
