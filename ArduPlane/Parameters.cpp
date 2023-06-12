@@ -995,6 +995,11 @@ const AP_Param::Info Plane::var_info[] = {
     // @Path: ../libraries/AP_Vehicle/AP_Vehicle.cpp
     PARAM_VEHICLE_INFO,
 
+	// Add Ground Effect Params
+	GSCALAR(gndEffect_steady_thr, "GNDEFCT_THR", GNDEFCT_STEADY_THROTTLE_DEFAULT),
+	GSCALAR(gndEffect_steady_alt, "GNDEFCT_ALT", GNDEFCT_STEADY_ALT_DEFAULT),
+	GSCALAR(gndEffect_kP, "GNFEFCT_P", GNDEFCT_P_DEFAULT),
+
     AP_VAREND
 };
 

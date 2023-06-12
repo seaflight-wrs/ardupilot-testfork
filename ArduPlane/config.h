@@ -252,3 +252,17 @@
 #ifndef THR_CTRL_LAND_THRESH
  #define THR_CTRL_LAND_THRESH 0.7
 #endif
+
+//////////////////////////////////////////////////////////////////////////////
+// Ground Effect
+#ifndef GNDEFCT_STEADY_THROTTLE_DEFAULT
+	# define GNDEFCT_STEADY_THROTTLE_DEFAULT	60
+#endif
+
+#ifndef GNDEFCT_STEADY_ALT_DEFAULT
+	# define GNDEFCT_STEADY_ALT_DEFAULT		10
+#endif
+
+#ifndef GNDEFCT_P_DEFAULT
+	# define GNDEFCT_P_DEFAULT 		7.0
+#endif
