@@ -255,14 +255,18 @@
 
 //////////////////////////////////////////////////////////////////////////////
 // Ground Effect
-#ifndef GNDEFCT_STEADY_THROTTLE_DEFAULT
-	# define GNDEFCT_STEADY_THROTTLE_DEFAULT	60
+#ifndef GNDEFCT_THR_MIN_DEFAULT
+	# define GNDEFCT_THR_MIN_DEFAULT				10
 #endif
 
-#ifndef GNDEFCT_STEADY_ALT_DEFAULT
-	# define GNDEFCT_STEADY_ALT_DEFAULT		10
+#ifndef GNDEFCT_THR_MAX_DEFAULT
+	# define GNDEFCT_THR_MAX_DEFAULT			90
 #endif
 
-#ifndef GNDEFCT_P_DEFAULT
-	# define GNDEFCT_P_DEFAULT 		7.0
+#ifndef GNDEFCT_ALT_MIN_DEFAULT
+	# define GNDECT_ALT_MIN_DEFAULT					30
+#endif
+
+#ifndef GNDEFCT_ALT_MAX_DEFAULT
+	# define GNDEFCT_ALT_MAX_DEFAULT		 		110
 #endif

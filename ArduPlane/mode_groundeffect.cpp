@@ -28,8 +28,6 @@ static constexpr int32_t GROUND_EFFECT_PITCH_CENTIDEGREES{200}; //2 degrees for 
 */
 // static constexpr float GROUND_EFFECT_CONTROLLER_KP{10};
 
-// TODO make these into parameter values instead of hard-coded
-
 bool ModeGroundEffect::_enter()
 {
 	plane.throttle_allows_nudging = false;
@@ -61,9 +59,6 @@ bool ModeGroundEffect::_enter()
 	//	return false;
 	// }
 
-	// Set P controller gain
-	pAlt2Throttle(plane.g.gndEffect_kP);
-
 	return true;
 }
 
@@ -83,17 +78,10 @@ void ModeGroundEffect::update() //defining ModeGroundEffect function
 	plane.steering_control.rudder = plane.channel_rudder->get_control_in_zero_dz();
 
 	/*
-	* TODO 
-	* Consider filtering rangefinder output. See ../libraries/Filter
-	* There may be a problem with rangefinder read freq
-	* This method is a 400Hz method. Rangefinder (tfMini Plus/benewake) updates at 100Hz
-
 	* Personal notes:
 	* These functions (the bool and void) reference specific members of the ModeGroundEffect
 	* class in mode.h, which are set to "override" meanining they override whatever it was based upon
 	*/
-
-	uint16_t altMm = plane.rangefinder.distance_mm_orient(ROTATION_PITCH_270);
 	
 	// If RC Throttle commanded is zero, don't run throttle controller at all (failsafe)
 	// Flight can be stopped if throttle is cut, even in auto mode
@@ -102,14 +90,22 @@ void ModeGroundEffect::update() //defining ModeGroundEffect function
 		return;
 	}
 
-	// float error = GROUND_EFFECT_TARGET_ALT_CM - ((float) altMm / 10.0);
-	float error = plane.g.gndEffect_steady_Alt - ((float) altMm / 10.0);
+	// 400Hz method - rangefinder likely signficantly slower
+	uint16_t altMm = plane.rangefinder.distance_mm_orient(ROTATION_PITCH_270);
 
-	// int16_t commanded_throttle = GROUND_EFFECT_STEADY_THROTTLE + ((int16_t) pAlt2Throttle.get_p(error));
-	int16_t commanded_throttle = plane.g.gndEffect_steady_thr + ((int16_6) pAlt2Throttle.get_p(error));
+	// Slope for linear throttle response - % throttle decrease for every mm increase in alt
+	float m = -((float) (plane.g.gndEffect_thr_max - plane.g.gndEffect_thr_min)) / ((float) (plane.g.gndEffect_alt_max - plane.g.gndEffect_alt_min));
+	
+	// Alt: mm altitude above the minimum altitude
+	float x = altMm - plane.g.gndEffect_alt_min;
 
-	// Commanded throttle must be within limits:
-	commanded_throttle = constrain_int16(commanded_throttle, 0, 100);
+	// Intercept: how many % should the throttle shift up
+	int16_t b = plane.g.gndEffect_thr_min;
+
+	int16_t y = m*x_b;
+
+	int16_t commanded_throttle = constrain_int16(y, plane.g.gndEffect_thr_min, plane.g.gndEffect_thr_max);
+	commanded_throttle = constrain_int16(y, 0, 100);
 
 	SRV_Channels::set_output_scaled(SRV_Channel::k_throttle,commanded_throttle);
 }
