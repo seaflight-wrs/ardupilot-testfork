@@ -122,13 +122,14 @@ public:
 
     // The RangeFinder_State structure is filled in by the backend driver
     struct RangeFinder_State {
-        float distance_m;               // distance in meters
+    float distance_m;               // distance in meters
 	float distance_cm;		  // distance in cm (preferred) - TODO should these be uint16_t?
 	float distance_mm;		  // distance in mm (not always available)
         uint16_t voltage_mv;            // voltage in millivolts, if applicable, otherwise 0
         enum RangeFinder::Status status; // sensor status
         uint8_t  range_valid_count;     // number of consecutive valid readings (maxes out at 10)
         uint32_t last_reading_ms;       // system time of last successful update from sensor
+		unit16_t strength;
 
         const struct AP_Param::GroupInfo *var_info;
     };

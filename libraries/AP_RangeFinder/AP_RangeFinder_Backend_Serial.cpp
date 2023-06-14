@@ -52,7 +52,7 @@ uint32_t AP_RangeFinder_Backend_Serial::initial_baudrate(const uint8_t serial_in
 */
 void AP_RangeFinder_Backend_Serial::update(void)
 {
-    if (get_reading(state.distance_m)) {
+    if (get_reading(state.distance_m, state.strength)) {
 		state.distance_mm = state.distance_m*1000; //add mm
         // update range_valid state based on distance measured
         state.last_reading_ms = AP_HAL::millis();

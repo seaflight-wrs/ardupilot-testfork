@@ -48,7 +48,7 @@ extern const AP_HAL::HAL& hal;
 // byte 8               Checksum        Checksum byte, sum of bytes 0 to bytes 7
 
 // distance returned in reading_m, signal_ok is set to true if sensor reports a strong signal
-bool AP_RangeFinder_Benewake::get_reading(float &reading_m)
+bool AP_RangeFinder_Benewake::get_reading(float &reading_m, uint16_t& strength)
 {
     if (uart == nullptr) {
         return false;
@@ -93,6 +93,13 @@ bool AP_RangeFinder_Benewake::get_reading(float &reading_m)
                 if (checksum == linebuf[BENEWAKE_FRAME_LENGTH-1]) {
                     // calculate distance
                     uint16_t dist = ((uint16_t)linebuf[3] << 8) | linebuf[2];
+
+					// Small strength readings can cause bad readings
+					strength = ((uint16_t)linebuf[5] << 8) | linebuf[4];
+					if(strength <= 20) {
+						return false;
+					}
+
                     if (dist >= BENEWAKE_DIST_MAX_CM || dist == uint16_t(model_dist_max_cm())) {
                         // this reading is out of range. Note that we
                         // consider getting exactly the model dist max

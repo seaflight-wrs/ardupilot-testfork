@@ -1,6 +1,17 @@
 #include "mode.h"
 #include "Plane.h"
 
+// state space
+// state vecotr (x):
+// altitude - rangefinder
+// vertical speed - get_velocity_ned()[2]
+// airspeed - plane.ahrs.airspeed_estimate()
+
+// input vector (u):
+// throttle percentage
+
+// output vector (y):
+// altitude
 
 bool ModeGroundEffect::_enter()
 {
@@ -38,8 +49,19 @@ bool ModeGroundEffect::_enter()
 
 void ModeGroundEffect::update() //defining ModeGroundEffect function
 {
+
+	// get new reading, if available
+	if(plane.rangefinder.status_orient(ROTATION_PITCH_270) == RangeFinder::Status::Good) {
+		_last_good_reading_mm = plane.rangefinder.distance_mm_orient(ROTATION_PITCH_270);
+		_last_good_reading_time_ms = AP_HAL::millis();
+	}
+
+	// fail-safe if no good reading in awhile - assume high
+	if(AP_HAL::millis() - _last_good_reading_time_ms > 1000) {
+		_last_good_reading_mm = plane.g.gndEffect_alt_max;
+	}
 	// Rangefinder operation
-	int16_6 errorMm = _alt_desired_mm - plane.rangefinder.distance_mm_orient(ROTATION_PITCH_270);	
+	int16_6 errorMm = _alt_desired_mm - _last_good_reading_mm;
 
 	// Desire flat roll
 	plane.nav_roll_cd = 0;
