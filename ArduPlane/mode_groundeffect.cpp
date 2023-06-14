@@ -71,7 +71,7 @@ void ModeGroundEffect::update() //defining ModeGroundEffect function
 	plane.steering_control.rudder = plane.channel_rudder->get_control_in_zero_dz();
 
 	// flaps are controlled in servos.cpp using this number:
-	desired_flap_percentage = (uint8_t) constrain_int16(plane.g2.gndefct_flaps.get_pid(errorMm), -100, 100); //note that this value is originally declared in mode.h
+	desired_flap_percentage = (int8_t) constrain_int16(plane.g2.gndefct_flaps.get_pid(errorMm), -100, 100); //note that this value is originally declared in mode.h
 
 	/*
 	* Personal notes:
