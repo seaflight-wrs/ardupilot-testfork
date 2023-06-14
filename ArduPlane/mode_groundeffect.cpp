@@ -1,32 +1,6 @@
 #include "mode.h"
 #include "Plane.h"
 
-/*	
-*	Desired hover altitude (cm).
-* 	Ideally 1-2 meters to begin.
-*/
-// static constexpr float GROUND_EFFECT_TARGET_ALT_CM{50}; //start with 50cm - shouldn't this be a param?
-
-/* 
-*	Steady-state throttle required at given altitude to remain there.
-*	For MkV this is likely 50-60 - assume 60 to be safe CHANGE LATER MAYBE
-*	Must be between 0 and 100
-*/
-// static constexpr int16_t GROUND_EFFECT_STEADY_THROTTLE{60};
-
-/*
-*	Nose-up pitch target, in centidegrees
-*	Sufficiently high pitch angle can render the rangefinder ineffective without compensation.
-*	General rule of thumb is FOV/2 maximum. Need Benewake FOV...
-*	Still unclear if this should be sign-flipped.
-*/ 
-// static constexpr int32_t GROUND_EFFECT_PITCH_CENTIDEGREES{200}; //2 degrees for MkV
-
-/* 
-*	P Gain on Alt2Throttle P-conroller
-*	For each cm below target altitude, throttle increases by this percentage (linear P)
-*/
-// static constexpr float GROUND_EFFECT_CONTROLLER_KP{10};
 
 bool ModeGroundEffect::_enter()
 {
@@ -74,9 +48,8 @@ void ModeGroundEffect::update() //defining ModeGroundEffect function
 	// Pilot maintains control over rudder
 	plane.steering_control.rudder = plane.channel_rudder->get_control_in_zero_dz();
 
-	// TODO Flaperon control - may need rework
-	int8_t flap_percentage = (uint8_t) constrain_int16(plane.g2.gndefct_flaps.get_pid(errorMm), -100, 100);
-	plane.flaperon_update(flap_percentage);
+	// flaps are controlled in servos.cpp using this number:
+	desired_flap_percentage = (uint8_t) constrain_int16(plane.g2.gndefct_flaps.get_pid(errorMm), -100, 100); //note that this value is originally declared in mode.h
 
 	/*
 	* Personal notes:
