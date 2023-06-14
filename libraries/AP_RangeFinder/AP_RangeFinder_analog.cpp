@@ -115,6 +115,7 @@ void AP_RangeFinder_analog::update(void)
         dist_m = 0;
     }
     state.distance_m = dist_m;
+    state.distance_mm = dist_m*1000.0f;
     state.last_reading_ms = AP_HAL::millis();
 
     // update range_valid state based on distance measured
