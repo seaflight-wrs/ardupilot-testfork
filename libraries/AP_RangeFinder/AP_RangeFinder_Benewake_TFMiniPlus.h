@@ -43,7 +43,7 @@ public:
     void update(void) override;
 
 	// update() will populate state.distance_mm
-	bool supports_mm_precision() const ovveride {return true;}
+	bool supports_mm_precision() const override { return true; }  //fixed typo
 
 
 protected:
