@@ -20,7 +20,7 @@
 *	General rule of thumb is FOV/2 maximum. Need Benewake FOV...
 *	Still unclear if this should be sign-flipped.
 */ 
-static constexpr int32_t GROUND_EFFECT_PITCH_CENTIDEGREES{200}; //2 degrees for MkV
+// static constexpr int32_t GROUND_EFFECT_PITCH_CENTIDEGREES{200}; //2 degrees for MkV
 
 /* 
 *	P Gain on Alt2Throttle P-conroller
@@ -39,25 +39,19 @@ bool ModeGroundEffect::_enter()
 		return false;
 	 }
 
-	// Verify that the rangefinder is capable of small distance measures. This fails with many.
-	// if(plane.rangefinder.min_distance_cm_orient(ROTATION_PITCH_270) >=10){
-	// 	return false;
-	// }
+	// Nominal throttle should be midpoint between high and low throttle params
+	_thr_ff = (plane.g.gndEffect_thr_max + plane.g.gndEffect_thr_min)/2.f;
 
-	// Verify rangefinder health - fails if low, high, or no sensor data
-	// if(plane.rangefinder.status_orient(ROTATION_PITCH_270) == RangeFinder::Status::Good){
-	// 	return false;
-	// }
+	// Target altitude should be the midpoint between high and low parameters
+	_alt_desired_mm = (plane.g.gndEffect_alt_max + plane.g.gndEffect_alt_min)/2;
 
-	// Verify rangefinder health - last reading should not be more than 0.5s old
-	// if((plane.rangefinder.last_reading_ms(ROTATION_PITCH_270) - AP_HAL::millis()) > 500){
-	//	return false;
-	// }
+	float new_thr_p = ((float) (plane.g.gndEffect_thr_max = plane.g.gndEffect_thr_min)) / ((float) (plane.g.gndEffect_alt_max = plane.g.gndEffect_alt_min));
 
-	// Verify that we are somewhat close to the desired altitude for the flight mode.
-	// if(plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270) > 5 * GROUND_EFFECT_TARGET_ALT_CM){
-	//	return false;
-	// }
+	plane.g2.gndefct_thr.kP(new_thr_p);
+
+	plane.g2.gndefct_thr.reset();
+	plane.g2.gndefct_ele.reset();
+	plane.g2.gndefct_flaps.reset();
 
 	return true;
 }
@@ -70,12 +64,19 @@ bool ModeGroundEffect::_enter()
 
 void ModeGroundEffect::update() //defining ModeGroundEffect function
 {
+	// Rangefinder operation
+	int16_6 errorMm = _alt_desired_mm - plane.rangefinder.distance_mm_orient(ROTATION_PITCH_270);	
+
 	// Desire flat roll
 	plane.nav_roll_cd = 0;
 	// Desire some nose up pitch (for Mk V is 2 degrees)
-	plane.nav_pitch_cd = GROUND_EFFECT_PITCH_CENTIDEGREES;
+	plane.nav_pitch_cd = (int16_t) plane.g2.gndefct_ele.get_pid(errorMm);
 	// Pilot maintains control over rudder
 	plane.steering_control.rudder = plane.channel_rudder->get_control_in_zero_dz();
+
+	// TODO Flaperon control - may need rework
+	int8_t flap_percentage = (uint8_t) constrain_int16(plane.g2.gndefct_flaps.get_pid(errorMm), -100, 100);
+	plane.flaperon_update(flap_percentage);
 
 	/*
 	* Personal notes:
@@ -90,21 +91,9 @@ void ModeGroundEffect::update() //defining ModeGroundEffect function
 		return;
 	}
 
-	// 400Hz method - rangefinder likely signficantly slower
-	uint16_t altMm = plane.rangefinder.distance_mm_orient(ROTATION_PITCH_270);
+	int16_t throttle_command = plane.g2.gndefct_thr.get_pid(errorMm) + _thr_ff;
 
-	// Slope for linear throttle response - % throttle decrease for every mm increase in alt
-	float m = -((float) (plane.g.gndEffect_thr_max - plane.g.gndEffect_thr_min)) / ((float) (plane.g.gndEffect_alt_max - plane.g.gndEffect_alt_min));
-	
-	// Alt: mm altitude above the minimum altitude
-	float x = altMm - plane.g.gndEffect_alt_min;
-
-	// Intercept: how many % should the throttle shift up
-	int16_t b = plane.g.gndEffect_thr_max;
-
-	int16_t y = m*x_b;
-
-	int16_t commanded_throttle = constrain_int16(y, plane.g.gndEffect_thr_min, plane.g.gndEffect_thr_max);
+	int16_t commanded_throttle = constrain_int16(throttle_command, plane.g.gndEffect_thr_min, plane.g.gndEffect_thr_max);
 	commanded_throttle = constrain_int16(commanded_throttle, 0, 100);
 
 	SRV_Channels::set_output_scaled(SRV_Channel::k_throttle,commanded_throttle);

@@ -579,6 +579,10 @@ public:
     
     AP_Int8         axis_bitmask; // axes to be autotuned
 
+	PID gndefct_thr;
+	PID gndefct_ele;
+	PID gndefct_flaps;
+
     // just to make compilation easier when all things are compiled out...
     uint8_t unused_integer;
 };

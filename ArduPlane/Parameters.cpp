@@ -1256,7 +1256,10 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @User: Standard
     AP_GROUPINFO("AUTOTUNE_AXES", 34, ParametersG2, axis_bitmask, 7),
 
-
+	// Ground Effect PIDs
+	AP_SUBGROUPINFO(gndefct_thr, "GNDEFCT_THR_", 35, ParametersG2, PID),
+	AP_SUBGROUPINFO(gndefct_ele, "GNDEFCT_ELE_", 36, ParametersG2, PID),
+	AP_SUBGROUPINFO(gndefct_flaps, "GNDEFCT_FLP_", 37, ParametersG2, PID,
     
     AP_GROUPEND
 };
