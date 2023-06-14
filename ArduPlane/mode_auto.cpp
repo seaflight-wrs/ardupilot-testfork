@@ -97,6 +97,21 @@ void ModeAuto::update()
         } else {
             plane.calc_throttle();
         }
+
+	} else if (nav_cmd_id == 50) {
+		int16_t thr_ff = (plane.g.gndEffect_thr_max + plane.g.gndEffect_thr_min)/2.f;
+		int16_t alt_desired_mm = (plane.g.gndEffect_alt_max + plane.g.gndEffect_alt_min)/2;
+		int16_t errorMm = alt_desired_mm - plane.rangefinder.distance_mm_orient(ROTATION_PITCH_270);
+		plane.calc_nav_roll();
+		plane.nav_pitch_cd = (int16_t) plane.g2.gndefct_ele.get_pid(errorMm);
+		int16_t throttle_command = plane.g2.gndefct_thr.get_pid(errorMm) + thr_ff;
+		int16_t commanded_throttle = constrain_int16(throttle_command, plane.g.gndEffect_thr_min, plane.g.gndEffect_thr_max);
+		commanded_throttle = constraint_int16(commanded_throttle, 0, 100);
+
+		SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, commanded_throttle);
+
+		// TODO is this in the right position?
+
 #if AP_SCRIPTING_ENABLED
     } else if (nav_cmd_id == MAV_CMD_NAV_SCRIPT_TIME) {
         // NAV_SCRIPTING has a desired roll and pitch rate and desired throttle
@@ -104,7 +119,20 @@ void ModeAuto::update()
         plane.nav_pitch_cd = ahrs.pitch_sensor;
         SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, plane.nav_scripting.throttle_pct);
 #endif
-    } else {
+	
+/*} else if (nav_cmd_id == 50) {
+		int16_t thr_ff = (plane.g.gndEffect_thr_max + plane.g.gndEffect_thr_min)/2.f;
+		int16_t alt_desired_mm = (plane.g.gndEffect_alt_max + plane.g.gndEffect_alt_min)/2;
+		int16_t errorMm = alt_desired_mm - plane.rangefinder.distance_mm_orient(ROTATION_PITCH_270);
+		plane.calc_nav_roll();
+		plane.nav_pitch_cd = (int16_t) plane.g2.gndefct_ele.get_pid(errorMm);
+		int16_t throttle_command = plane.g2.gndefct_thr.get_pid(errorMm) + thr_ff;
+		int16_t commanded_throttle = constrain_int16(throttle_command, plane.g.gndEffect_thr_min, plane.g.gndEffect_thr_max);
+		commanded_throttle = constraint_int16(commanded_throttle, 0, 100);
+
+		SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, commanded_throttle);   
+*/
+ } else {
         // we are doing normal AUTO flight, the special cases
         // are for takeoff and landing
         if (nav_cmd_id != MAV_CMD_NAV_CONTINUE_AND_CHANGE_ALT) {
