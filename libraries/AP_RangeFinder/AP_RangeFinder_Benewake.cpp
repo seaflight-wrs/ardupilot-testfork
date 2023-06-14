@@ -97,10 +97,8 @@ bool AP_RangeFinder_Benewake::get_reading(float &reading_m, uint16_t& strength)
 					// Small strength readings can cause bad readings
 					strength = ((uint16_t)linebuf[5] << 8) | linebuf[4];
 					if(strength <= 20) {
-						return false;
-					}
 
-                    if (dist >= BENEWAKE_DIST_MAX_CM || dist == uint16_t(model_dist_max_cm())) {
+                    else if (dist >= BENEWAKE_DIST_MAX_CM || dist == uint16_t(model_dist_max_cm())) {
                         // this reading is out of range. Note that we
                         // consider getting exactly the model dist max
                         // is out of range. This fixes an issue with
