@@ -146,7 +146,7 @@ void AP_RangeFinder_Benewake_TFMiniPlus::update()
     if (accum.count > 0) {
         state.distance_m = (accum.sum * 0.001f) / accum.count;
 	state.distance_cm = (accum.sum*.01f) / accum.count;
-	statue.distance_mm = accum.sum/accum.count
+	state.distance_mm = accum.sum/accum.count
         state.last_reading_ms = AP_HAL::millis();
         accum.sum = 0;
         accum.count = 0;
