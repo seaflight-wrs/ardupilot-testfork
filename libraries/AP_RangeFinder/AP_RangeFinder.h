@@ -129,7 +129,7 @@ public:
         enum RangeFinder::Status status; // sensor status
         uint8_t  range_valid_count;     // number of consecutive valid readings (maxes out at 10)
         uint32_t last_reading_ms;       // system time of last successful update from sensor
-		unit16_t strength;
+		uint16_t strength; //fixed type from before
 
         const struct AP_Param::GroupInfo *var_info;
     };
