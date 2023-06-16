@@ -16,7 +16,8 @@ public:
         RangeFinder::RangeFinder_State &_state,
         AP_RangeFinder_Params &_params) {
         return new AP_RangeFinder_Benewake_TF02(_state, _params);
-    }
+	}
+    
 
 protected:
     float model_dist_max_cm() const override { return 2200; }

@@ -123,8 +123,8 @@ public:
     // The RangeFinder_State structure is filled in by the backend driver
     struct RangeFinder_State {
     float distance_m;               // distance in meters
-	float distance_cm;		  // distance in cm (preferred) - TODO should these be uint16_t?
-	float distance_mm;		  // distance in mm (not always available)
+	uint16_t distance_cm;		  // distance in cm (preferred) - TODO should these be uint16_t?
+	uint16_t distance_mm;		  // distance in mm (not always available)
         uint16_t voltage_mv;            // voltage in millivolts, if applicable, otherwise 0
         enum RangeFinder::Status status; // sensor status
         uint8_t  range_valid_count;     // number of consecutive valid readings (maxes out at 10)
@@ -175,7 +175,7 @@ public:
     AP_RangeFinder_Backend *find_instance(enum Rotation orientation) const;
 
 	// find first rangefinder with specified orientation that supports mm precision
-	AP_RangeFinder_Backend *find_instnace_with_mm_prec(enum Rotation orientation) const;
+	AP_RangeFinder_Backend *find_instance_with_mm_prec(enum Rotation orientation) const;
 
     AP_RangeFinder_Backend *get_backend(uint8_t id) const;
 

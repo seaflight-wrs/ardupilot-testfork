@@ -445,7 +445,7 @@ void RangeFinder::detect_instance(uint8_t instance, uint8_t& serial_instance)
 #endif
         break;
     case Type::BenewakeTF02:
-#if AP_RANGEFINDER_BENEWAKE_TF02_ENABLED
+ #if AP_RANGEFINDER_BENEWAKE_TF02_ENABLED
         serial_create_fn = AP_RangeFinder_Benewake_TF02::create;
 #endif
         break;
@@ -453,12 +453,12 @@ void RangeFinder::detect_instance(uint8_t instance, uint8_t& serial_instance)
 #if AP_RANGEFINDER_BENEWAKE_TFMINI_ENABLED
         serial_create_fn = AP_RangeFinder_Benewake_TFMini::create;
 #endif
-        break;
-    case Type::BenewakeTF03:
+        break; 
+   case Type::BenewakeTF03:
 #if AP_RANGEFINDER_BENEWAKE_TF03_ENABLED
         serial_create_fn = AP_RangeFinder_Benewake_TF03::create;
 #endif
-        break;
+        break; 
     case Type::TeraRanger_Serial:
 #if AP_RANGEFINDER_TERARANGER_SERIAL_ENABLED
         serial_create_fn = AP_RangeFinder_TeraRanger_Serial::create;
