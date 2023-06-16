@@ -340,10 +340,17 @@ public:
         k_param_pidServoRudder, // unused
         k_param_pidTeThrottle, // unused
         k_param_pidNavPitchAltitude, // unused
-        k_param_pidWheelSteer, // unused
+        // k_param_pidWheelSteer, // unused
+		
+		k_param_gndefct_51_multiplier = 246,
+		k_param_gndEffect_alt_max = 247,
 
         k_param_mixing_offset,
         k_param_dspoiler_rud_rate,
+
+		k_param_gndEffect_thr_min = 250,
+		k_param_gndEffect_thr_max = 251,
+		k_param_gndEffect_alt_min = 252,
 
         k_param_logger = 253, // Logging Group
 
@@ -358,7 +365,14 @@ public:
         k_param_takeoff_throttle_max_t,
     };
 
-    AP_Int16 format_version;
+	AP_Int16 gndEffect_thr_min;
+	AP_Int16 gndEffect_thr_max;
+	AP_Int16 gndEffect_alt_min;
+	AP_Int16 gndEffect_alt_max;
+
+	AP_Float gndefct_51_multiplier;    
+
+	AP_Int16 format_version;
 
     // Telemetry control
     //
@@ -570,6 +584,10 @@ public:
 
     // just to make compilation easier when all things are compiled out...
     uint8_t unused_integer;
+
+	PID gndefct_thr;
+	PID gndefct_ele;
+	PID gndefct_flaps;
 };
 
 extern const AP_Param::Info var_info[];

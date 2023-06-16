@@ -995,6 +995,13 @@ const AP_Param::Info Plane::var_info[] = {
     // @Path: ../libraries/AP_Vehicle/AP_Vehicle.cpp
     PARAM_VEHICLE_INFO,
 
+	GSCALAR(gndEffect_thr_min, "GNDEFCT_THR_MIN", GNDEFCT_THR_MIN_DEFAULT),
+	GSCALAR(gndEffect_thr_max, "GNDEFCT_THR_MAX", GNDEFCT_THR_MAX_DEFAULT),
+	GSCALAR(gndEffect_alt_min, "GNDEFCT_ALT_MIN", GNDEFCT_ALT_MIN_DEFAULT),
+	GSCALAR(gndEffect_alt_max, "GNDEFCT_ALT_MAX", GNDEFCT_ALT_MAX_DEFAULT),
+
+	GSCALAR(gndefct_51_multiplier, "GNDEFCT_51_MULT", 2.0f), //high-altitude GE mode
+
     AP_VAREND
 };
 
@@ -1250,7 +1257,9 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @User: Standard
     AP_GROUPINFO("AUTOTUNE_AXES", 34, ParametersG2, axis_bitmask, 7),
 
-
+	AP_SUBGROUPINFO(gndefct_thr, "GNDEFCT_THR_", 35, ParametersG2, PID),
+	AP_SUBGROUPINFO(gndefct_ele, "GNDEFCT_ELE_", 36, ParametersG2, PID),
+	AP_SUBGROUPINFO(gndefct_flaps, "GNDEFCT_FLP_", 37, ParametersG2, PID),
     
     AP_GROUPEND
 };
