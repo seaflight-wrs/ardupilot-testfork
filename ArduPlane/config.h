@@ -252,3 +252,21 @@
 #ifndef THR_CTRL_LAND_THRESH
  #define THR_CTRL_LAND_THRESH 0.7
 #endif
+
+/////////////////////////////////////////////////////////////////////////////
+// Ground Effect Mode Defaults
+#ifndef GNDEFCT_THR_MIN_DEFAULT
+	#define GNDEFCT_THR_MIN_DEFAULT		10
+#endif
+
+#ifndef GNDEFCT_THR_MAX_DEFAULT
+	#define GNDEFCT_THR_MAX_DEFAULT 	90
+#endif
+
+#ifndef GNDEFCT_ALT_MIN_DEFAULT
+	#define GNDEFCT_ALT_MIN_DEFAULT		30
+#endif
+
+#ifndef GNDEFCT_ALT_MAX_DEFAULT
+	#define GNDEFCT_ALT_MAX_DEFAULT		110
+#endif	
