@@ -8,6 +8,7 @@
 #include <AP_Vehicle/ModeReason.h>
 #include "quadplane.h"
 #include <AP_AHRS/AP_AHRS.h>
+#include <AC_PID/AC_P.h>
 
 class AC_PosControl;
 class AC_AttitudeControl_Multi;
@@ -53,6 +54,7 @@ public:
 #if HAL_QUADPLANE_ENABLED
         LOITER_ALT_QLAND = 25,
 #endif
+		GROUND_EFFECT = 26,
     };
 
     // Constructor
@@ -783,6 +785,23 @@ protected:
     void restore_mode(const char *reason, ModeReason modereason);
 
     bool _enter() override;
+};
+
+class ModeGroundEffect : public Mode
+{
+public:
+
+	Mode::Number mode_number() const override { return Mode::Number::GROUND_EFFECT; }
+	const char *name() const override { return "GROUND_EFFECT"; }
+	const char *name4() const override { return "GDEF"; }
+
+	void update() override;
+
+protected:
+
+	bool _enter() override;
+
+
 };
 
 #endif
