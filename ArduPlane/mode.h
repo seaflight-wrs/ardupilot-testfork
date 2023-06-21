@@ -797,9 +797,13 @@ public:
 
 	void update() override;
 
+	int8_t desired_flap_percentage;
+
 protected:
 
 	bool _enter() override;
+	float _thr_ff;
+	float _alt_desired_cm;
 
 
 };
