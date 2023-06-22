@@ -37,7 +37,7 @@ void ModeGroundEffect::update()
 	
 	float altcm = plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270) // cm reading from rangefinder
 
-	desired_flap_percentage = (uint8_t) constrain_int16(plane.g2.gndefct_flaps.get_pid(errorcm), -100, 100);
+	desired_flap_percentage = (int8_t) constrain_int16(plane.g2.gndefct_flaps.get_pid(errorcm), -100, 100);
 
 
 	if(plane.get_throttle_input(false) == 0){
