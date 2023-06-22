@@ -106,19 +106,21 @@ void ModeAuto::update()
 #endif
 	
 	} else if (nav_cmd_id == 50 || nav_cmd_id == 51) {
-		plane.SpdHgt_Controller->reset_pitch_I();
+		// plane.pitchController->reset_pitch_I(); TODO this is probably an issue and will need solved
+		// compiler error above: "error: base operand of '->' has non-pointer type 'AP_PitchController'
 
-		float _thr_ff = (plane.g.gndEffect-thr_max + plane.g.gndEffect_thr_min)/2.f;
-		int16_t _alt_desired_cm = (plane.g.gndEffect-alt_max + plan.g.gndEffect_alt_min)/2;
+		float _thr_ff = (plane.g.gndEffect_thr_max + plane.g.gndEffect_thr_min)/2.f;
+		int16_t _alt_desired_cm = (plane.g.gndEffect_alt_max + plane.g.gndEffect_alt_min)/2;
+		int16_t altcm = plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270);
 
 		if (nav_cmd_id == 51) {
 			_alt_desired_cm *= 2;
 		}
 
-		int16_t errorcm = alt_desired_cm - plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270);
+		int16_t errorcm = _alt_desired_cm - altcm;
 		plane.calc_nav_roll();
 		plane.nav_pitch_cd = (int16_t) plane.g2.gndefct_ele.get_pid(errorcm);
-		int16_t throttle_command = plane.g2.gndefct_thr.get_pid(errorcm) + thr_ff;
+		int16_t throttle_command = plane.g2.gndefct_thr.get_pid(errorcm) + _thr_ff;
 		int16_t commanded_throttle = constrain_int16(throttle_command, plane.g.gndEffect_thr_min, plane.g.gndEffect_thr_max);
 		commanded_throttle = constrain_int16(commanded_throttle, 0, 100);
 		SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, commanded_throttle);	

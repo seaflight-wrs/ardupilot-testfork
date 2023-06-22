@@ -3,9 +3,9 @@
 
 bool ModeGroundEffect::_enter()
 {
-	plane.throttle_allows_nudging = false;
-	plane.auto_throttle_mode = false;
-	plane.auto_navigation_mode = false;
+	// plane.throttle_allows_nudging = false; // apparently not in Plane anymore?
+	// plane.auto_throttle_mode = false;
+	// plane.auto_navigation_mode = false;
 
 	_thr_ff = (plane.g.gndEffect_thr_max + plane.g.gndEffect_thr_min)/2.f;
 
@@ -25,7 +25,7 @@ bool ModeGroundEffect::_enter()
 
 void ModeGroundEffect::update()
 {
-	float altcm = plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270) // cm reading from rangefinder
+	float altcm = plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270); // cm reading from rangefinder
 	int16_t errorcm = _alt_desired_cm - altcm;
 	
 	plane.nav_roll_cd = 0;
@@ -38,7 +38,7 @@ void ModeGroundEffect::update()
 
 
 	if(plane.get_throttle_input(false) == 0){
-		SRV_Channels::set_output_scaled(SRV_Channel::lk_throttle, 0_;
+		SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, 0);
 		return;
 	}	
 
@@ -47,5 +47,5 @@ void ModeGroundEffect::update()
 	int16_t commanded_throttle = constrain_int16(throttle_command, plane.g.gndEffect_thr_min, plane.g.gndEffect_thr_max);
 	commanded_throttle = constrain_int16(commanded_throttle, 0, 100);
 
-	SRV_Channels::set_output_scaled(SRV_Channel:k_throttle, commanded_throttle);
+	SRV_Channels::set_output_scaled(SRV_Channel::k_throttle, commanded_throttle);
 }
