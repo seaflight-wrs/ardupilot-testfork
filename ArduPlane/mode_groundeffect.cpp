@@ -25,17 +25,14 @@ bool ModeGroundEffect::_enter()
 
 void ModeGroundEffect::update()
 {
-	
-	int16_t errorcm = alt_desired_cm = plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270);
+	float altcm = plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270) // cm reading from rangefinder
+	int16_t errorcm = _alt_desired_cm - altcm;
 	
 	plane.nav_roll_cd = 0;
 	
 	plane.nav_pitch_cd = (int16_t) plane.g2.gndefct_ele.get_pid(errorcm);
 
 	plane.steering_control.rudder = plane.channel_rudder->get_control_in_zero_dz();
-
-	
-	float altcm = plane.rangefinder.distance_cm_orient(ROTATION_PITCH_270) // cm reading from rangefinder
 
 	desired_flap_percentage = (int8_t) constrain_int16(plane.g2.gndefct_flaps.get_pid(errorcm), -100, 100);
 
