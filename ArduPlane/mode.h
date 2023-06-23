@@ -791,19 +791,21 @@ class ModeGroundEffect : public Mode
 {
 public:
 
-	Mode::Number mode_number() const override { return Mode::Number::GROUND_EFFECT; }
+	Number mode_number() const override { return Number::GROUND_EFFECT; }
 	const char *name() const override { return "GROUND_EFFECT"; }
 	const char *name4() const override { return "GDEF"; }
 
-	void update() override;
+	int8_t desired_flap_percentage;	
 
-	int8_t desired_flap_percentage;
+	void update() override;
 
 protected:
 
-	bool _enter() override;
 	float _thr_ff;
 	float _alt_desired_cm;
+
+	bool _enter() override;
+
 
 
 };
