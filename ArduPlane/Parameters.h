@@ -568,6 +568,10 @@ public:
     
     AP_Int8         axis_bitmask; // axes to be autotuned
 
+#if HAL_GROUND_EFFECT_ENABLED
+	GroundEffectController ground_effect_controller;
+#endif
+
     // just to make compilation easier when all things are compiled out...
     uint8_t unused_integer;
 };

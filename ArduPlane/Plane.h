@@ -46,6 +46,7 @@
 #include <AP_RPM/AP_RPM.h>
 #include <AP_Stats/AP_Stats.h>     // statistics library
 #include <AP_Beacon/AP_Beacon.h>
+#include <AP_GroundEffectControl/AP_GroundEffectController.h> // include GEV controller libraries
 
 #include <AP_AdvancedFailsafe/AP_AdvancedFailsafe.h>
 #include <APM_Control/APM_Control.h>
@@ -299,6 +300,9 @@ private:
 
     // This is used to enable the inverted flight feature
     bool inverted_flight;
+
+	// Enable GE submode for FBWA
+	bool ground_effect_submode;
 
     // last time we ran roll/pitch stabilization
     uint32_t last_stabilize_ms;
