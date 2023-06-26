@@ -482,7 +482,8 @@ bool AP_Mission::is_nav_cmd(const Mission_Command& cmd)
     return (cmd.id <= MAV_CMD_NAV_LAST ||
             cmd.id == MAV_CMD_NAV_SET_YAW_SPEED ||
             cmd.id == MAV_CMD_NAV_SCRIPT_TIME ||
-            cmd.id == MAV_CMD_NAV_ATTITUDE_TIME);
+            cmd.id == MAV_CMD_NAV_ATTITUDE_TIME ||
+			cmd.id == MAV_CMD_NAV_WAYPOINT_GROUND_EFFECT);
 }
 
 /// get_next_nav_cmd - gets next "navigation" command found at or after start_index
@@ -821,6 +822,7 @@ bool AP_Mission::stored_in_location(uint16_t id)
 {
     switch (id) {
     case MAV_CMD_NAV_WAYPOINT:
+	case MAV_CMD_NAV_WAYPOINT_GROUND_EFFECT:
     case MAV_CMD_NAV_LOITER_UNLIM:
     case MAV_CMD_NAV_LOITER_TURNS:
     case MAV_CMD_NAV_LOITER_TIME:
@@ -920,6 +922,7 @@ MAV_MISSION_RESULT AP_Mission::sanity_check_params(const mavlink_mission_item_in
     uint8_t nan_mask;
     switch (packet.command) {
     case MAV_CMD_NAV_WAYPOINT:
+	case MAV_CMD_NAV_WAYPOINT_GROUND_EFFECT:
         nan_mask = ~(1 << 3); // param 4 can be nan
         break;
     case MAV_CMD_NAV_LAND:
@@ -979,7 +982,9 @@ MAV_MISSION_RESULT AP_Mission::mavlink_int_to_mission_cmd(const mavlink_mission_
         // these are reserved for storing 16 bit command IDs
         return MAV_MISSION_INVALID;
 
+	case MAV_CMD_NAV_WAYPOINT_GROUND_EFFECT:
     case MAV_CMD_NAV_WAYPOINT: {                        // MAV ID: 16
+
         /*
           the 15 byte limit means we can't fit both delay and radius
           in the cmd structure. When we expand the mission structure
@@ -1510,6 +1515,7 @@ bool AP_Mission::mission_cmd_to_mavlink_int(const AP_Mission::Mission_Command& c
         return false;
 
     case MAV_CMD_NAV_WAYPOINT:                          // MAV ID: 16
+	case MAV_CMD_NAV_WAYPOINT_GROUND_EFFECT:
 #if APM_BUILD_TYPE(APM_BUILD_ArduPlane)
         // acceptance radius in meters
 
@@ -1783,6 +1789,9 @@ bool AP_Mission::mission_cmd_to_mavlink_int(const AP_Mission::Mission_Command& c
         packet.param3 = cmd.content.scripting.p2;
         packet.param4 = cmd.content.scripting.p3;
         break;
+
+	case MAV_CMD_NAV_WAYPOINT_GROUND_EFFECT:
+		return "GroundEffectWP";
 
 #if AP_SCRIPTING_ENABLED
     case MAV_CMD_NAV_SCRIPT_TIME:
