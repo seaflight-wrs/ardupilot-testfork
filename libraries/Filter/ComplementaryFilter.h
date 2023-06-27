@@ -17,6 +17,6 @@ private:
 	float sample_freq;
 	// use 2-pole lp filters to get a reasonably sharp cutoff
 	DigitalBiquadFilter<float>::biquad_params params;
-	DigitalBiquadFilter<float? lp, hp;
+	DigitalBiquadFilter<float> lp, hp;
 	float out;
 };

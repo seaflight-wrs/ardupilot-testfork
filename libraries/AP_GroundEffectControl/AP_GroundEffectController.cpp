@@ -97,7 +97,7 @@ const AP_Param::GroupInfo GroundEffectController::var_info[] = {
 	// @Range: 0.0 2.0
 	// @Increment: 0.01
 	// @User: Advanced
-	AP_GROUPINFO("_CUTOFF_FRQ", 8, GroundEffectController, _CUTOFF_FREQ, 0,1),
+	AP_GROUPINFO("_CUTOFF_FRQ", 8, GroundEffectController, _CUTOFF_FREQ, 0.1),
 
 	// @Param: LIM_ROLL
 	// @DisplayName: Max roll angle (degrees)

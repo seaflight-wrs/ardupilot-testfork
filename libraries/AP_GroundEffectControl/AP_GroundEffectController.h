@@ -19,7 +19,7 @@ public:
 			AP_Param:setup_object_defaults(this, var_info);
 			_rangefinder = RangeFinder::get_singleton();
 			_ahrs = AP_AHRS::get_singleton();
-		}l
+		}
 
 	/* Do not allow copies */ 
 	GroundEffectController(const GroundEffectController &other) = delete;
@@ -33,7 +33,7 @@ public:
 
 		void reset();
 
-	const AP_Logger::PID_Info& get_pid_info(void) const { return _pid_info; }
+	const AP_Logger::PID_Info& get_pid_info(void) const { return _pid_info; } // TODO this is not compiling, AP_Logger seems outdated. Look into libraries/PID/PID.h and see about how to references this/what it is supposed to reference.
 	
 	static const struct AP_Param::GroupInfo var_info[];
 
